@@ -1,5 +1,5 @@
 .cask/
 configuration.el
 auto-save-list/
-init.el
 recentf
+backup/

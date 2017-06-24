@@ -59,7 +59,7 @@ Setting the tab behaviour to complete
 Enabling the mighty ido mode for fuzzy search everywhere
 
 #+BEGIN_SRC emacs-lisp
-(setq indo-enable-flex-matching t)
+(setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
 #+END_SRC
