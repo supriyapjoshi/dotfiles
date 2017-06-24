@@ -16,14 +16,13 @@ Use =cask= and =pallet= for package management
 #+END_SRC
 
 * Some basics
-
-Disable the audio bell
+** Disable the audio bell
 
 #+BEGIN_SRC emacs-lisp
 (setq ring-bell-function 'ignore)
 #+END_SRC
 
-Highlight the current line
+** Highlight the current line
 
 It helps to highlight the current line to understand what is happening
 
@@ -32,39 +31,44 @@ It helps to highlight the current line to understand what is happening
   (global-hl-line-mode))
 #+END_SRC
 
-Getting rid of the welcome scratch buffer
+** Getting rid of the welcome scratch buffer
 
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-message t)
 #+END_SRC
 
-Disabling tabs because we only believe in spaces
+** Disabling tabs because we only believe in spaces
 
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
 #+END_SRC
 
-Setting the tab-with to 2
+** Setting the tab-with to 2
 
 #+BEGIN_SRC emacs-lisp
 (setq-default tab-width 2)
 #+END_SRC
 
-Setting the tab behaviour to complete
+** Setting the tab behaviour to complete
 
 #+BEGIN_SRC emacs-lisp
 (setq tab-always-indent 'complete)
 #+END_SRC
 
-Enabling the mighty ido mode for fuzzy search everywhere
+** Enabling the mighty ido mode for fuzzy search everywhere
 
 #+BEGIN_SRC emacs-lisp
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
 #+END_SRC
+** Use projectile everywhere
 
-Hide certain modes from the modeline. a.k.a using the diminish
+#+BEGIN_SRC emacs-lisp
+  (projectile-global-mode)
+#+END_SRC
+
+** Hide certain modes from the modeline. a.k.a using the diminish
 
 #+BEGIN_SRC emacs-lisp
 (defmacro diminish-minor-mode (filename mode &optional abbrev)
@@ -92,7 +96,7 @@ Hide certain modes from the modeline. a.k.a using the diminish
 
 #+END_SRC
 
-Housekeeping regarding the backup files created by emacs
+** Housekeeping regarding the backup files created by emacs
 
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
@@ -104,7 +108,7 @@ Housekeeping regarding the backup files created by emacs
   )
 #+END_SRC
 
-Ivy key bindings and setting the fancy mode
+** Ivy key bindings and setting the fancy mode
 
 #+BEGIN_SRC emacs-lisp
 (ivy-mode 1)
@@ -112,13 +116,13 @@ Ivy key bindings and setting the fancy mode
 (setq ivy-display-style 'fancy)
 #+END_SRC
 
-Always removing the trailing whitespaces when saving the file
+** Always removing the trailing whitespaces when saving the file
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
-Since we want to restrict the line length to 80 characters, make the characters after column 80 change color
+** Since we want to restrict the line length to 80 characters, make the characters after column 80 change color
 
 #+BEGIN_SRC emacs-lisp
 (require 'whitespace)
@@ -126,9 +130,66 @@ Since we want to restrict the line length to 80 characters, make the characters 
  (global-whitespace-mode t)
 #+END_SRC
 
+** Kill the buffer without prompting
+#+BEGIN_SRC emacs-lisp
+ (defun kill-current-buffer ()
+    "Kill the current buffer without prompting."
+    (interactive)
+    (kill-buffer (current-buffer)))
+#+END_SRC
+
+** Enable the auto complete mode
+#+BEGIN_SRC emacs-lisp
+(auto-complete-mode t)
+#+END_SRC
+
+** Highlight uncommitted changes
+
+Use the =diff-hl= package to highlight changed-and-uncommitted lines when
+programming.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'diff-hl)
+
+  (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+  (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode)
+#+END_SRC
+
+** Projectile
+
+Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky enough
+that I rarely use it (and forget it when I need it). This binds the
+easier-to-type =C-c C-v= and =C-c v= to useful searches.
+
+#+BEGIN_SRC emacs-lisp
+  (defun search-project-for-symbol-at-point ()
+    "Use `projectile-ag' to search the current project for `symbol-at-point'."
+    (interactive)
+    (projectile-ag (projectile-symbol-at-point)))
+
+  (global-set-key (kbd "C-c v") 'projectile-ag)
+  (global-set-key (kbd "C-c C-v") 'search-project-for-symbol-at-point)
+#+END_SRC
+
+When I visit a project with =projectile-switch-project=, the default action is
+to search for a file in that project. I'd rather just open up the top-level
+directory of the project in =dired= and find (or create) new files from there.
+
+#+BEGIN_SRC emacs-lisp
+  (setq projectile-switch-project-action 'projectile-dired)
+#+END_SRC
+
+I'd like to /always/ be able to recursively fuzzy-search for files, not just
+when I'm in a Projecile-defined project. This uses the current directory as a
+project root (if I'm not in a "real" project).
+
+#+BEGIN_SRC emacs-lisp
+  (setq projectile-require-project-root nil)
+#+END_SRC
+
 * UI Preferences
 
-Dont use the toolbar or menubar so turning it off
+** Dont use the toolbar or menubar so turning it off
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode 0)
 (menu-bar-mode 0)
@@ -136,13 +197,13 @@ Dont use the toolbar or menubar so turning it off
 (scroll-bar-mode -1))
 #+END_SRC
 
-Use fancy lambdas
+** Use fancy lambdas
 
 #+BEGIN_SRC emacs-lisp
 (global-prettify-symbols-mode t)
 #+END_SRC
 
-Customise the solarize-theme
+** Customise the solarize-theme
 
 #+BEGIN_SRC emacs-lisp
 (defun apply-custom-theme()
@@ -156,13 +217,13 @@ Customise the solarize-theme
 (load-theme 'solarized-dark t))
 #+END_SRC
 
-Apply the solarized-dark theme
+** Apply the solarized-dark theme
 
 #+BEGIN_SRC emacs-lisp
 (apply-custom-theme)
 #+END_SRC
 
-Customise the fonts and font size
+** Customise the fonts and font size
 
 This magic code will help setting the font size and the new "Inconsolata" font for all the frames that are opened up.
 It also maps the key bindings to increase and decrease the font size.
@@ -219,25 +280,25 @@ other, future frames."
 
 * evil-mode
 
-Configuration of =evil-mode=
+** Configuration of =evil-mode=
 
 #+BEGIN_SRC emacs-lisp
 (evil-mode 1)
 #+END_SRC
 
-Enable the global evil surround mode everywhere
+** Enable the global evil surround mode everywhere
 
 #+BEGIN_SRC emacs-lisp
 (global-evil-surround-mode 1)
 #+END_SRC
 
-Enable the C-p key binding for project navigation
+** Enable the C-p key binding for project navigation
 
 #+BEGIN_SRC emacs-lisp
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 #+END_SRC
 
-Enable the global leader and set the key
+** Enable the global leader and set the key
 
 #+BEGIN_SRC emacs-lisp
 (global-evil-leader-mode 1)
@@ -266,15 +327,22 @@ ensure that smart parens are enabled in evil mode as well
 "u" 'undo-tree-visualize)
 #+END_SRC
 
+** Magit with evil
+Use =evil= keybindings with =magit=:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'evil-magit)
+#+END_SRC
 * Clojure configurations
 
 #+BEGIN_SRC emacs-lisp
-
-(require 'smartparens-config)
+(require 'smartparens)
+(require 'evil-smartparens)
 (setq sp-base-key-bindings 'paredit)
 (setq sp-autoskip-closing-pair 'always)
 (setq sp-hybrid-kill-entire-symbol nil)
 (sp-use-paredit-bindings)
+(smartparens-strict-mode t)
 
 #+END_SRC
 
@@ -291,4 +359,108 @@ Our clojure allows 90 characters line length so for clojure files change the res
 (setq cider-repl-help-banner nil)
 (evil-leader/set-key
 "c" 'cider-connect)
+#+END_SRC
+* Publishing and task management with Org-mode
+
+** Display preferences
+
+I like to see an outline of pretty bullets instead of a list of asterisks.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode t)))
+#+END_SRC
+
+I like seeing a little downward-pointing arrow instead of the usual ellipsis
+(=...=) that org displays when there's stuff under a header.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "⤵")
+#+END_SRC
+
+Use syntax highlighting in source blocks while editing.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+Make TAB act as if it were issued in a buffer of the language's major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-tab-acts-natively t)
+#+END_SRC
+
+** Task and org-capture management
+
+Store my org files in =~/org=, maintain an inbox in Dropbox, define the location
+of an index file (my main todo list), and archive finished tasks in
+=~/org/archive.org=
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory "~/org")
+
+  (defun org-file-path (filename)
+    "Return the absolute address of an org file, given its relative name."
+    (concat (file-name-as-directory org-directory) filename))
+
+  (setq org-index-file (org-file-path "index.org"))
+  (setq org-archive-location
+        (concat (org-file-path "archive.org") "::* From %s"))
+#+END_SRC
+
+I store all my todos in =~/org/index.org=, so I'd like to derive my agenda from
+there.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (list org-index-file))
+#+END_SRC
+
+Hitting =C-c C-x C-s= will mark a todo as done and move it to an appropriate
+place in the archive.
+
+#+BEGIN_SRC emacs-lisp
+  (defun mark-done-and-archive ()
+    "Mark the state of an org-mode item as DONE and archive it."
+    (interactive)
+    (org-todo 'done)
+    (org-archive-subtree))
+
+  (define-key org-mode-map (kbd "C-c C-x C-s") 'mark-done-and-archive)
+#+END_SRC
+
+Record the time that a todo was archived.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-log-done 'time)
+#+END_SRC
+
+**** Capturing tasks
+
+Define a few common tasks as capture templates. Specifically, I frequently:
+
+- Record work related todos in =~/org/work.org=,
+- Keep personal project todo list in =~/org/personal.org=, and
+- Maintain a misc todo list in =~/org/index.org=.
+
+#+BEGIN_SRC emacs-lisp
+      (setq org-capture-templates
+            '(("w" "Work todos"
+               entry
+               (file (org-file-path "work.org"))
+               "* TODO %?\n")
+              ("p" "Project todos"
+               entry
+               (file (org-file-path "personal.org")))
+              ("m" "Miscellanous todos"
+               entry
+               (file (org-file-path "misc.org")))
+              ))
+#+END_SRC
+
+When I'm starting an org capture template I'd like to begin in insert mode. I'm
+opening it up in order to start typing something, so this skips a step.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
 #+END_SRC

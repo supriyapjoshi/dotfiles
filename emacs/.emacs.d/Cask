@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "ag")
+(depends-on "auto-complete")
 (depends-on "cask")
 (depends-on "cider")
 (depends-on "clojure-mode")
@@ -19,6 +20,7 @@
 (depends-on "ivy")
 (depends-on "magit")
 (depends-on "magit-popup")
+(depends-on "org-bullets")
 (depends-on "projectile")
 (depends-on "pallet")
 (depends-on "paredit")
