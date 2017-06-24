@@ -18,7 +18,7 @@ Use =cask= and =pallet= for package management
 * Some basics
 
 Disable the audio bell
- 
+
 #+BEGIN_SRC emacs-lisp
 (setq ring-bell-function 'ignore)
 #+END_SRC
@@ -54,6 +54,14 @@ Setting the tab behaviour to complete
 
 #+BEGIN_SRC emacs-lisp
 (setq tab-always-indent 'complete)
+#+END_SRC
+
+Enabling the mighty ido mode for fuzzy search everywhere
+
+#+BEGIN_SRC emacs-lisp
+(setq indo-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 #+END_SRC
 
 Hide certain modes from the modeline. a.k.a using the diminish
@@ -94,6 +102,28 @@ Housekeeping regarding the backup files created by emacs
   kept-new-versions 20   ; how many of the newest versions to keep
   kept-old-versions 5    ; and how many of the old
   )
+#+END_SRC
+
+Ivy key bindings and setting the fancy mode
+
+#+BEGIN_SRC emacs-lisp
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-display-style 'fancy)
+#+END_SRC
+
+Always removing the trailing whitespaces when saving the file
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+Since we want to restrict the line length to 80 characters, make the characters after column 80 change color
+
+#+BEGIN_SRC emacs-lisp
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs lines-tail trailing))
+ (global-whitespace-mode t)
 #+END_SRC
 
 * UI Preferences
@@ -209,15 +239,56 @@ Enable the C-p key binding for project navigation
 
 Enable the global leader and set the key
 
+#+BEGIN_SRC emacs-lisp
+(global-evil-leader-mode 1)
+#+END_SRC
+
 ** Smart Parens configuration
 
-Smartparens help to match the parens and complete them in smart way. This setting is to 
+Smartparens help to match the parens and complete them in smart way. This setting is to
 ensure that smart parens are enabled in evil mode as well
 
 #+BEGIN_SRC emacs-lisp
 (smartparens-global-mode 1)
 (evil-smartparens-mode 1)
+(show-smartparens-global-mode 1)
 #+END_SRC
 
 ** Evil leader configuration
 
+#+BEGIN_SRC emacs-lisp
+(evil-leader/set-leader ",")
+(evil-leader/set-key
+"b" 'switch-to-buffer
+"r" 'split-window-right
+"n" 'other-window
+"d" 'split-window-below
+"u" 'undo-tree-visualize)
+#+END_SRC
+
+* Clojure configurations
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'smartparens-config)
+(setq sp-base-key-bindings 'paredit)
+(setq sp-autoskip-closing-pair 'always)
+(setq sp-hybrid-kill-entire-symbol nil)
+(sp-use-paredit-bindings)
+
+#+END_SRC
+
+Our clojure allows 90 characters line length so for clojure files change the restriction to 90 characters
+
+#+BEGIN_SRC emacs-lisp
+(setq whitespace-line-column nil)
+(add-hook 'clojure-mode-hook '(lambda () (setq fill-column 90)))
+#+END_SRC
+
+** Cider settings
+
+#+BEGIN_SRC emacs-lisp
+(setq cider-repl-help-banner nil)
+(evil-leader/set-key
+"c" 'cider-connect)
+#+END_SRC
