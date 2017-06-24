@@ -1,0 +1,223 @@
+* Emacs Configuration
+
+* Sensible defaults usage
+
+Use sensible-defaults.el for some basic settings
+
+* Package Management
+
+Use =cask= and =pallet= for package management
+
+#+BEGIN_SRC emacs-lisp
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
+(require 'pallet)
+(setq pallet-mode t)
+#+END_SRC
+
+* Some basics
+
+Disable the audio bell
+ 
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+Highlight the current line
+
+It helps to highlight the current line to understand what is happening
+
+#+BEGIN_SRC emacs-lisp
+(when window-system
+  (global-hl-line-mode))
+#+END_SRC
+
+Getting rid of the welcome scratch buffer
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+#+END_SRC
+
+Disabling tabs because we only believe in spaces
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)   ;; don't use tabs to indent
+#+END_SRC
+
+Setting the tab-with to 2
+
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 2)
+#+END_SRC
+
+Setting the tab behaviour to complete
+
+#+BEGIN_SRC emacs-lisp
+(setq tab-always-indent 'complete)
+#+END_SRC
+
+Hide certain modes from the modeline. a.k.a using the diminish
+
+#+BEGIN_SRC emacs-lisp
+(defmacro diminish-minor-mode (filename mode &optional abbrev)
+  `(eval-after-load (symbol-name ,filename)
+     '(diminish ,mode ,abbrev)))
+
+(defmacro diminish-major-mode (mode-hook abbrev)
+  `(add-hook ,mode-hook
+             (lambda () (setq mode-name ,abbrev))))
+
+(diminish-minor-mode 'abbrev 'abbrev-mode)
+(diminish-minor-mode 'simple 'auto-fill-function)
+(diminish-minor-mode 'company 'company-mode)
+(diminish-minor-mode 'flycheck 'flycheck-mode)
+(diminish-minor-mode 'global-whitespace 'global-whitespace-mode)
+(diminish-minor-mode 'projectile 'projectile-mode)
+(diminish-minor-mode 'subword 'subword-mode)
+(diminish-minor-mode 'undo-tree 'undo-tree-mode)
+(diminish-minor-mode 'wrap-region 'wrap-region-mode)
+
+(diminish-minor-mode 'paredit 'paredit-mode " π")
+
+(diminish-major-mode 'emacs-lisp-mode-hook "el")
+
+
+#+END_SRC
+
+Housekeeping regarding the backup files created by emacs
+
+#+BEGIN_SRC emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t      ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 20   ; how many of the newest versions to keep
+  kept-old-versions 5    ; and how many of the old
+  )
+#+END_SRC
+
+* UI Preferences
+
+Dont use the toolbar or menubar so turning it off
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(when window-system
+(scroll-bar-mode -1))
+#+END_SRC
+
+Use fancy lambdas
+
+#+BEGIN_SRC emacs-lisp
+(global-prettify-symbols-mode t)
+#+END_SRC
+
+Customise the solarize-theme
+
+#+BEGIN_SRC emacs-lisp
+(defun apply-custom-theme()
+(setq solarized-height-minus-1 1.0)
+(setq solarized-height-plus-1 1.0)
+(setq solarized-height-plus-2 1.0)
+(setq solarized-height-plus-3 1.0)
+(setq solarized-height-plus-4 1.0)
+(setq solarized-scale-org-headlines nil)
+(setq solarized-high-contrast-mode-line t)
+(load-theme 'solarized-dark t))
+#+END_SRC
+
+Apply the solarized-dark theme
+
+#+BEGIN_SRC emacs-lisp
+(apply-custom-theme)
+#+END_SRC
+
+Customise the fonts and font size
+
+This magic code will help setting the font size and the new "Inconsolata" font for all the frames that are opened up.
+It also maps the key bindings to increase and decrease the font size.
+
+#+BEGIN_SRC emacs-lisp
+(setq default-font "Inconsolata")
+(setq default-font-size 16)
+(setq current-font-size default-font-size)
+
+(setq font-change-increment 1.1)
+
+(defun font-code ()
+  "Return a string representing the current font (like \"Inconsolata-14\")."
+  (concat default-font "-" (number-to-string current-font-size)))
+
+(defun set-font-size ()
+  "Set the font to `default-font' at `current-font-size'.
+Set that for the current frame, and also make it the default for
+other, future frames."
+  (let ((font-code (font-code)))
+    (add-to-list 'default-frame-alist (cons 'font font-code))
+    (set-frame-font font-code)))
+
+(defun reset-font-size ()
+  "Change font size back to `default-font-size'."
+  (interactive)
+  (setq current-font-size default-font-size)
+  (set-font-size))
+
+(defun increase-font-size ()
+  "Increase current font size by a factor of `font-change-increment'."
+  (interactive)
+  (setq current-font-size
+        (ceiling (* current-font-size font-change-increment)))
+  (set-font-size))
+
+(defun decrease-font-size ()
+  "Decrease current font size by a factor of `font-change-increment', down to a minimum size of 1."
+  (interactive)
+  (setq current-font-size
+        (max 1
+             (floor (/ current-font-size font-change-increment))))
+  (set-font-size))
+
+(define-key global-map (kbd "C-)") 'reset-font-size)
+(define-key global-map (kbd "C-+") 'increase-font-size)
+(define-key global-map (kbd "C-=") 'increase-font-size)
+(define-key global-map (kbd "C-_") 'decrease-font-size)
+(define-key global-map (kbd "C--") 'decrease-font-size)
+
+(reset-font-size)
+
+#+END_SRC
+
+* evil-mode
+
+Configuration of =evil-mode=
+
+#+BEGIN_SRC emacs-lisp
+(evil-mode 1)
+#+END_SRC
+
+Enable the global evil surround mode everywhere
+
+#+BEGIN_SRC emacs-lisp
+(global-evil-surround-mode 1)
+#+END_SRC
+
+Enable the C-p key binding for project navigation
+
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+#+END_SRC
+
+Enable the global leader and set the key
+
+** Smart Parens configuration
+
+Smartparens help to match the parens and complete them in smart way. This setting is to 
+ensure that smart parens are enabled in evil mode as well
+
+#+BEGIN_SRC emacs-lisp
+(smartparens-global-mode 1)
+(evil-smartparens-mode 1)
+#+END_SRC
+
+** Evil leader configuration
+
