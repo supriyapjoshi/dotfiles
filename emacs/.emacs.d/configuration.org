@@ -191,6 +191,7 @@ project root (if I'm not in a "real" project).
   (setq projectile-require-project-root nil)
 #+END_SRC
 
+<<<<<<< Updated upstream
 ** Modeline configuration
    This is the configuration for the modeline
 #+BEGIN_SRC emacs-lisp
@@ -573,6 +574,12 @@ Mapping the key to capture the tasks
 #+END_SRC
 
 **** Capturing tasks
+I like to capture tasks in todo at different points from the project. Configuring some keys to capture tasks
+
+#+BEGIN_SRC emacs-lisp
+(evil-leader/set-key
+"t" 'org-capture)
+#+END_SRC
 
 Define a few common tasks as capture templates. Specifically, I frequently:
 
