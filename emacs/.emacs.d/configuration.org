@@ -140,8 +140,10 @@ It helps to highlight the current line to understand what is happening
 
 ** Enable the auto complete mode
 #+BEGIN_SRC emacs-lisp
+(require 'auto-complete-config)
 (require 'auto-complete)
-(setq ac-modes '(clojure-mode emacs-lisp))
+(ac-config-default)
+(add-to-list 'ac-modes 'org-mode)
 #+END_SRC
 
 ** Highlight uncommitted changes
@@ -190,7 +192,7 @@ project root (if I'm not in a "real" project).
 #+END_SRC
 
 ** Modeline configuration
-This is the configuration for the modeline
+   This is the configuration for the modeline
 #+BEGIN_SRC emacs-lisp
     (setq-default
    mode-line-format
@@ -391,7 +393,6 @@ other, future frames."
 #+END_SRC
 
 * evil-mode
-
 ** Configuration of =evil-mode=
 
 #+BEGIN_SRC emacs-lisp
@@ -466,14 +467,27 @@ Our clojure allows 90 characters line length so for clojure files change the res
 #+END_SRC
 
 ** Cider settings
+**** Basic settings
+Basic cider settings to map the leader key shortcut and disable the banner.
 
 #+BEGIN_SRC emacs-lisp
 (setq cider-repl-help-banner nil)
 (evil-leader/set-key
 "c" 'cider-connect)
 #+END_SRC
-* Publishing and task management with Org-mode
+**** Enable auto-complete
+#+BEGIN_SRC emacs-lisp
+(require 'ac-cider)
+(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+(add-hook 'cider-mode-hook 'ac-cider-setup)
+(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+(eval-after-load "auto-complete"
+'(progn
+(add-to-list 'ac-modes 'cider-mode)
+(add-to-list 'ac-modes 'cider-repl-mode)))
+#+END_SRC
 
+* Publishing and task management with Org-mode
 ** Display preferences
 
 I like to see an outline of pretty bullets instead of a list of asterisks.
@@ -547,6 +561,12 @@ Record the time that a todo was archived.
   (setq org-log-done 'time)
 #+END_SRC
 
+Mapping the key to capture the tasks
+#+BEGIN_SRC emacs-lisp
+(evil-leader/set-key
+"t" 'org-capture)
+#+END_SRC
+
 **** Capturing tasks
 
 Define a few common tasks as capture templates. Specifically, I frequently:
@@ -556,18 +576,19 @@ Define a few common tasks as capture templates. Specifically, I frequently:
 - Maintain a misc todo list in =~/org/index.org=.
 
 #+BEGIN_SRC emacs-lisp
-      (setq org-capture-templates
-            '(("w" "Work todos"
-               entry
-               (file (org-file-path "work.org"))
-               "* TODO %?\n")
-              ("p" "Project todos"
-               entry
-               (file (org-file-path "personal.org")))
-              ("m" "Miscellanous todos"
-               entry
-               (file (org-file-path "misc.org")))
-              ))
+       (setq org-capture-templates
+             '(("w" "Work todos"
+                entry
+                (file (org-file-path "work.org"))
+                "* TODO %?\n")
+               ("p" "Project todos"
+                entry
+                (file (org-file-path "personal.org"))
+  "* TODO %?\n")
+               ("m" "Miscellanous todos"
+                entry
+                (file (org-file-path "misc.org")))
+               ))
 #+END_SRC
 
 When I'm starting an org capture template I'd like to begin in insert mode. I'm
