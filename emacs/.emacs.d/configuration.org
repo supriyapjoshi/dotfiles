@@ -592,7 +592,7 @@ Define a few common tasks as capture templates. Specifically, I frequently:
              '(("w" "Work todos"
                 entry
                 (file (org-file-path "work.org"))
-                "* TODO %?\n")
+                "* TODO %?\n %a")
                ("p" "Project todos"
                 entry
                 (file (org-file-path "personal.org"))
