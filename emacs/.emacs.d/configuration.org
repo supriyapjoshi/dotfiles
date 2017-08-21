@@ -191,7 +191,6 @@ project root (if I'm not in a "real" project).
   (setq projectile-require-project-root nil)
 #+END_SRC
 
-<<<<<<< Updated upstream
 ** Modeline configuration
    This is the configuration for the modeline
 #+BEGIN_SRC emacs-lisp
@@ -307,6 +306,10 @@ project root (if I'm not in a "real" project).
       :inherit 'mode-line-face
       :foreground "black" :background "#eab700")
 #+END_SRC
+** Undotree
+    #+BEGIN_SRC emacs-lisp
+      (setq global-undo-tree-mode 1)
+    #+END_SRC
 * UI Preferences
 
 ** Dont use the toolbar or menubar so turning it off
@@ -452,6 +455,18 @@ Use =evil= keybindings with =magit=:
 #+BEGIN_SRC emacs-lisp
   (require 'evil-magit)
 #+END_SRC
+** Using the evil-cursors
+   #+BEGIN_SRC emacs-lisp
+     (setq global-evil-mc-mode 1)
+   #+END_SRC
+* Jenkins setup
+This is used at work only.
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+  "b" 'jenkins--call-build-job-from-main-screen
+  "J" 'jenkins-enter-job
+  "R" 'jenkins--refresh-job-from-job-screen)
+#+END_SRC
 * Clojure configurations
 
 #+BEGIN_SRC emacs-lisp
@@ -493,6 +508,11 @@ Basic cider settings to map the leader key shortcut and disable the banner.
 (add-to-list 'ac-modes 'cider-repl-mode)))
 #+END_SRC
 
+* Javascript configurations
+** Set the indentation to 2 spaces for javascript
+  #+BEGIN_SRC emacs-lisp
+    (setq javascript-indent-level 2)
+  #+END_SRC
 * Publishing and task management with Org-mode
 ** Display preferences
 
