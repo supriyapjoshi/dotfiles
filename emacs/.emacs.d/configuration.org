@@ -510,6 +510,9 @@ Basic cider settings to map the leader key shortcut and disable the banner.
 '(progn
 (add-to-list 'ac-modes 'cider-mode)
 (add-to-list 'ac-modes 'cider-repl-mode)))
+
+(evil-set-initial-state 'cider-repl-mode 'emacs)
+
 #+END_SRC
 
 * Javascript configurations
