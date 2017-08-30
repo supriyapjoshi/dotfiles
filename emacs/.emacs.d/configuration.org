@@ -459,6 +459,10 @@ Use =evil= keybindings with =magit=:
    #+BEGIN_SRC emacs-lisp
      (setq global-evil-mc-mode 1)
    #+END_SRC
+** Using the evil-commentary
+   #+BEGIN_SRC emacs-lisp
+     (setq evil-commentary-mode 1)
+   #+END_SRC
 * Jenkins setup
 This is used at work only.
 #+BEGIN_SRC emacs-lisp

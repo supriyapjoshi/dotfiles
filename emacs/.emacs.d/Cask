@@ -10,6 +10,7 @@
 (depends-on "diff-hl")
 (depends-on "diminish")
 (depends-on "evil")
+(depends-on "evil-commentary")
 (depends-on "evil-leader")
 (depends-on "evil-magit")
 (depends-on "evil-mc")
