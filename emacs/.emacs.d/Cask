@@ -9,6 +9,7 @@
 (depends-on "clojure-mode")
 (depends-on "diff-hl")
 (depends-on "diminish")
+(depends-on "elixir-mode")
 (depends-on "evil")
 (depends-on "evil-commentary")
 (depends-on "evil-leader")
